@@ -6,7 +6,7 @@ generator client {
 }
 
 datasource db {
-    provider = "sqlite"
+    provider = "mysql"
     // NOTE: When using mysql or sqlserver, uncomment the @db.Text annotations in model Account below
     // Further reading:
     // https://next-auth.js.org/adapters/prisma#create-the-prisma-schema
@@ -64,3 +64,29 @@ model VerificationToken {
 
     @@unique([identifier, token])
 }
+
+
+model Set  {
+  id                String       @id
+  code              String
+  mtgo_code         String?
+  arena_code        String?
+  tcgplayer_id      Int?
+  name              String
+  set_type          String
+  released_at       String?
+  block_code        String?
+  block             String?
+  parent_set_code   String?
+  card_count        Int
+  printed_size      Int?
+  digital           Boolean
+  foil_only         Boolean
+  nonfoil_only      Boolean
+  uri               String
+  scryfall_uri      String
+  search_uri        String?
+  icon_svg_uri      String
+}
+
+

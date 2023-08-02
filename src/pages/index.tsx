@@ -5,6 +5,7 @@ import { api } from "~/utils/api";
 
 export default function Home() {
   const hello = api.example.hello.useQuery({ text: "from tRPC" });
+  // const sets = api.set.fetchAllSets.useQuery();
 
   return (
     <>
