@@ -55,6 +55,7 @@ model User {
     image         String?
     accounts      Account[]
     sessions      Session[]
+    decks         Deck[]
 }
 
 model VerificationToken {
@@ -89,4 +90,68 @@ model Set  {
   icon_svg_uri      String
 }
 
+model CardFacesDetails  {
+  id                  Int       @id @default(autoincrement())
+  name                String
+  mana_cost           String
+  type_line           String
+  oracle_text         String
+  colors              String
+  artist              String
+  artist_id           String
+  illustration_id     String
+  image_url           String
+}
 
+model Card {
+  id                String       @id
+  decks             CardsInDecks[]
+}
+
+
+model Deck {
+  id                 String       @id
+  name               String
+  format             Formats
+  cover_image_url    String
+  creator_id         String
+  creator            User      @relation(fields: [creator_id], references: [id])
+  cards              CardsInDecks[]
+  createdAt          DateTime @default(now())
+  updatedAt          DateTime @updatedAt
+}
+
+model CardsInDecks {
+  deck               Deck     @relation(fields: [deck_id], references: [id])
+  deck_id            String 
+  card               Card     @relation(fields: [card_id], references: [id])
+  card_id            String
+  number_copies      Int
+  addedAt            DateTime @default(now())
+
+  @@id([deck_id, card_id])
+}
+
+enum Formats {
+  standard
+  future
+  historic
+  gladiator
+  pioneer
+  explorer
+  modern
+  legacy
+  pauper
+  vintage
+  penny
+  commander
+  oathbreaker
+  brawl
+  historicbrawl
+  alchemy
+  paupercommander
+  duel
+  oldschool
+  premodern
+  predh
+}

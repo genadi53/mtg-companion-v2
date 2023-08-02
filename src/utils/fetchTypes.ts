@@ -22,8 +22,14 @@ export interface Set {
   icon_svg_uri: string;
 }
 
-export interface FetchSetsResponce {
+export interface GenericFetchResponce {
   object: string;
-  has_more: boolean;
+  has_more?: boolean;
+  next_page?: string;
+  total_cards?: number;
+  warnings?: [];
+}
+
+export interface FetchSetsResponce extends GenericFetchResponce {
   data: Set[];
 }
