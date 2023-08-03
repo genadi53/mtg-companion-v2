@@ -45,7 +45,6 @@ export const setRouter = createTRPCRouter({
       });
     }
 
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-call
     await ctx.prisma.set.createMany({
       data: dataForSave,
       skipDuplicates: true,
