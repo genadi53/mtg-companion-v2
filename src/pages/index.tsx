@@ -55,26 +55,38 @@ export default function Home() {
   );
 }
 
+import {
+  useUser,
+  UserButton,
+  SignedIn,
+  SignInButton,
+  SignedOut,
+} from "@clerk/nextjs";
+
 function AuthShowcase() {
-  const { data: sessionData } = useSession();
+  const { isLoaded, isSignedIn, user } = useUser();
 
   const { data: secretMessage } = api.example.getSecretMessage.useQuery(
     undefined, // no input
-    { enabled: sessionData?.user !== undefined }
+    { enabled: user !== undefined }
   );
 
   return (
     <div className="flex flex-col items-center justify-center gap-4">
+      <div>
+        <SignedOut>
+          <div className="rounded-full bg-white/10 px-10 py-3 font-semibold text-white no-underline transition hover:bg-white/20">
+            <SignInButton />
+          </div>
+        </SignedOut>
+        <SignedIn>
+          <UserButton afterSignOutUrl="/" />
+        </SignedIn>
+      </div>
       <p className="text-center text-2xl text-white">
-        {sessionData && <span>Logged in as {sessionData.user?.name}</span>}
+        {user && <span>Logged in as {user.fullName}</span>}
         {secretMessage && <span> - {secretMessage}</span>}
       </p>
-      <button
-        className="rounded-full bg-white/10 px-10 py-3 font-semibold text-white no-underline transition hover:bg-white/20"
-        onClick={sessionData ? () => void signOut() : () => void signIn()}
-      >
-        {sessionData ? "Sign out" : "Sign in"}
-      </button>
     </div>
   );
 }
