@@ -9,11 +9,14 @@
 
 import { initTRPC, TRPCError } from "@trpc/server";
 import { type CreateNextContextOptions } from "@trpc/server/adapters/next";
-import { type Session } from "next-auth";
 import superjson from "superjson";
 import { ZodError } from "zod";
-import { getServerAuthSession } from "~/server/auth";
 import { prisma } from "~/server/db";
+import type {
+  SignedInAuthObject,
+  SignedOutAuthObject,
+} from "@clerk/nextjs/api";
+import { getAuth } from "@clerk/nextjs/server";
 
 /**
  * 1. CONTEXT
@@ -23,8 +26,11 @@ import { prisma } from "~/server/db";
  * These allow you to access things when processing a request, like the database, the session, etc.
  */
 
-interface CreateContextOptions {
-  session: Session | null;
+/**
+ * Replace this with an object if you want to pass things to createContextInner
+ */
+interface AuthContextProps {
+  auth: SignedInAuthObject | SignedOutAuthObject;
 }
 
 /**
@@ -37,9 +43,10 @@ interface CreateContextOptions {
  *
  * @see https://create.t3.gg/en/usage/trpc#-serverapitrpcts
  */
-const createInnerTRPCContext = (opts: CreateContextOptions) => {
+// eslint-disable-next-line @typescript-eslint/require-await
+const createInnerTRPCContext = async ({ auth }: AuthContextProps) => {
   return {
-    session: opts.session,
+    auth,
     prisma,
   };
 };
@@ -54,10 +61,10 @@ export const createTRPCContext = async (opts: CreateNextContextOptions) => {
   const { req, res } = opts;
 
   // Get the session from the server using the getServerSession wrapper function
-  const session = await getServerAuthSession({ req, res });
+  // const session = await getServerAuthSession({ req, res });
 
-  return createInnerTRPCContext({
-    session,
+  return await createInnerTRPCContext({
+    auth: getAuth(req),
   });
 };
 
@@ -108,13 +115,14 @@ export const publicProcedure = t.procedure;
 
 /** Reusable middleware that enforces users are logged in before running the procedure. */
 const enforceUserIsAuthed = t.middleware(({ ctx, next }) => {
-  if (!ctx.session?.user) {
+  if (!ctx.auth.userId) {
     throw new TRPCError({ code: "UNAUTHORIZED" });
   }
+  console.log(ctx.auth.user);
+  console.log(ctx.auth.userId);
   return next({
     ctx: {
-      // infers the `session` as non-nullable
-      session: { ...ctx.session, user: ctx.session.user },
+      auth: ctx.auth,
     },
   });
 });

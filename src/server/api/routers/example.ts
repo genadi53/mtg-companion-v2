@@ -4,6 +4,7 @@ import {
   publicProcedure,
   protectedProcedure,
 } from "~/server/api/trpc";
+import { clerkClient } from "@clerk/nextjs/server";
 
 export const exampleRouter = createTRPCRouter({
   hello: publicProcedure
@@ -18,7 +19,7 @@ export const exampleRouter = createTRPCRouter({
     return ctx.prisma.example.findMany();
   }),
 
-  getSecretMessage: protectedProcedure.query(() => {
-    return "you can now see this secret message!";
+  getSecretMessage: protectedProcedure.query(({ ctx }) => {
+    return `you can now see this secret message, ${ctx.auth.user?.username}!`;
   }),
 });
