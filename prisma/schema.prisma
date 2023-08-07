@@ -88,6 +88,7 @@ model Set  {
   scryfall_uri      String
   search_uri        String?
   icon_svg_uri      String
+  cards             Card[]
 }
 
 model CardFacesDetails  {
@@ -105,7 +106,53 @@ model CardFacesDetails  {
 
 model Card {
   id                String       @id
+  lang              String
+  mtgo_id           Int?
+  oracle_id         String
+  // multiverse_ids?: number[] | null;
+  arena_id          Int?
+  tcgplayer_id      Int?
+  cardmarket_id     Int?
+  scryfall_uri      String
+  uri               String
+  name              String
+  cmc               Int
+  color_identity    String
+  keywords          String
+  layout            String
+  loyalty           String?
+  mana_cost         String
+  oracle_text       String
+  power             String?
+  produced_mana     String?
+  reserved          Boolean
+  type_line         String
+  toughness         String?
+  booster           Boolean
+  border_color      BorderColors
+  card_back_id      String
+  collector_number  String
+  digital           Boolean
+  finishes          String
+  frame             String
+  games             String
+  highres_image     Boolean
+  illustration_id   String
+  image_status      ImageStatus
+  rarity            Rarity
+  released_at       String
+  reprint           Boolean
+  promo             Boolean
+  textless          Boolean
+  variation         Boolean
+  foil              Boolean
+  nonfoil           Boolean
+
+  set_id            String  
+  faces             CardFace[]
+  set               Set           @relation(fields: [set_id], references: [id])
   decks             CardsInDecks[]
+  legalities        CardLegality[]
 }
 
 
@@ -132,6 +179,32 @@ model CardsInDecks {
   @@id([deck_id, card_id])
 }
 
+model CardLegality {
+  card_id       String
+  format        Formats
+  legality      Legalities
+  card          Card           @relation(fields: [card_id], references: [id])
+
+  @@id([card_id, format])
+}
+
+model CardFace {
+  id                  Int       @id @default(autoincrement())
+  artist              String
+  cmc                 Int
+  name                String
+  mana_cost           String
+  type_line           String
+  oracle_text         String
+  colors              String
+  artist_id           String
+  illustration_id     String
+  image_url           String
+
+  card_id             String
+  card                Card     @relation(fields: [card_id], references: [id])
+}
+
 enum Formats {
   standard
   future
@@ -154,4 +227,35 @@ enum Formats {
   oldschool
   premodern
   predh
+}
+
+enum Legalities {
+  legal
+  not_legal
+  restricted
+  banned
+}
+
+enum Rarity {
+  common
+  uncommon
+  rare
+  special
+  mythic
+  bonus
+}
+
+enum ImageStatus { 
+  missing
+  placeholder
+  lowres
+  highres_scan
+}
+
+enum BorderColors {
+  black
+  white
+  borderless
+  silver
+  gold
 }
