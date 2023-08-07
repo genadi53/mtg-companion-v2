@@ -91,19 +91,6 @@ model Set  {
   cards             Card[]
 }
 
-model CardFacesDetails  {
-  id                  Int       @id @default(autoincrement())
-  name                String
-  mana_cost           String
-  type_line           String
-  oracle_text         String
-  colors              String
-  artist              String
-  artist_id           String
-  illustration_id     String
-  image_url           String
-}
-
 model Card {
   id                String       @id
   lang              String
