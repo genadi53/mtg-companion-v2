@@ -8,6 +8,7 @@ import {
   serial,
   text,
   timestamp,
+  unique,
   varchar,
 } from "drizzle-orm/mysql-core";
 
@@ -29,7 +30,7 @@ export const account = mysqlTable("account", {
 export type Account = InferModel<typeof account>;
 
 export const accountRelations = relations(account, ({ one }) => ({
-  user: one(user),
+  user: one(user, { fields: [account.userId], references: [user.id] }),
 }));
 
 export const session = mysqlTable("session", {
@@ -41,6 +42,10 @@ export const session = mysqlTable("session", {
 
 export type Session = InferModel<typeof session>;
 
+export const sessionRelations = relations(session, ({ one }) => ({
+  user: one(user, { fields: [session.userId], references: [user.id] }),
+}));
+
 export const user = mysqlTable("user", {
   id: varchar("id", { length: 191 }).primaryKey(),
   name: varchar("name", { length: 191 }),
@@ -48,13 +53,27 @@ export const user = mysqlTable("user", {
   emailVerified: timestamp("emailVerified"),
   image: varchar("image", { length: 191 }),
 });
+
 export type User = InferModel<typeof user>;
 
-export const verificationToken = mysqlTable("verification_token", {
-  identifier: varchar("identifier", { length: 191 }),
-  token: varchar("token", { length: 191 }).unique(),
-  expires: timestamp("expires"),
-});
+export const userRelations = relations(user, ({ many }) => ({
+  accounts: many(account),
+  sessions: many(session),
+  decks: many(deck),
+}));
+
+export const verificationToken = mysqlTable(
+  "verification_token",
+  {
+    identifier: varchar("identifier", { length: 191 }),
+    token: varchar("token", { length: 191 }).unique(),
+    expires: timestamp("expires"),
+  },
+  (table) => ({
+    unq: unique().on(table.identifier, table.token),
+  })
+);
+
 export type VerificationToken = InferModel<typeof verificationToken>;
 
 export const set = mysqlTable("set", {
@@ -79,7 +98,12 @@ export const set = mysqlTable("set", {
   search_uri: varchar("search_uri", { length: 191 }),
   icon_svg_uri: varchar("icon_svg_uri", { length: 191 }),
 });
+
 export type Set = InferModel<typeof set>;
+
+export const setRelations = relations(set, ({ many }) => ({
+  cards: many(card),
+}));
 
 export const card = mysqlTable("card", {
   id: varchar("id", { length: 191 }).primaryKey(),
@@ -98,7 +122,7 @@ export const card = mysqlTable("card", {
   layout: varchar("layout", { length: 191 }),
   loyalty: varchar("loyalty", { length: 191 }),
   mana_cost: varchar("mana_cost", { length: 191 }),
-  oracle_text: varchar("oracle_text", { length: 191 }),
+  oracle_text: text("oracle_text"),
   power: varchar("power", { length: 191 }),
   produced_mana: varchar("produced_mana", { length: 191 }),
   reserved: boolean("reserved"),
@@ -143,34 +167,19 @@ export const card = mysqlTable("card", {
     "mythic",
   ]),
 });
+
 export type Card = InferModel<typeof card>;
+
+export const cardRelations = relations(card, ({ many, one }) => ({
+  cardsInDecks: many(cardsInDecks),
+  cardFace: many(cardFace),
+  cardLegality: many(cardLegality),
+  set: one(set, { fields: [card.set_id], references: [set.id] }),
+}));
 
 export const deck = mysqlTable("deck", {
   id: varchar("id", { length: 191 }).primaryKey(),
   name: varchar("name", { length: 191 }),
-  format: varchar("format", { length: 191 }),
-  cover_image_url: varchar("cover_image_url", { length: 191 }),
-  creator_id: varchar("creator_id", { length: 191 }),
-  createdAt: timestamp("createdAt").defaultNow(),
-  updatedAt: timestamp("updatedAt").defaultNow(),
-});
-export type Deck = InferModel<typeof deck>;
-
-export const cardsInDecks = mysqlTable("cards_in_decks", {
-  deck_id: varchar("deck_id", { length: 191 }),
-  card_id: varchar("card_id", { length: 191 }),
-  number_copies: int("number_copies"),
-  addedAt: timestamp("addedAt").defaultNow(),
-
-  //   deck: foreignKey("deck", { table: "deck", column: "deck_id" }),
-  //   card: foreignKey("card", { table: "card", column: "card_id" }),
-
-  //   primaryKeys: [["deck_id", "card_id"]],
-});
-export type CardsInDecks = InferModel<typeof cardsInDecks>;
-
-export const cardLegality = mysqlTable("card_legality", {
-  card_id: varchar("card_id", { length: 191 }),
   format: mysqlEnum("format", [
     "standard",
     "future",
@@ -194,18 +203,82 @@ export const cardLegality = mysqlTable("card_legality", {
     "premodern",
     "predh",
   ]),
-  legality: mysqlEnum("legality", [
-    "legal",
-    "not_legal",
-    "restricted",
-    "banned",
-  ]),
+  cover_image_url: varchar("cover_image_url", { length: 191 }),
+  creator_id: varchar("creator_id", { length: 191 }),
+  createdAt: timestamp("createdAt").defaultNow(),
+  updatedAt: timestamp("updatedAt").defaultNow(),
+});
 
+export type Deck = InferModel<typeof deck>;
+
+export const deckRelations = relations(deck, ({ many, one }) => ({
+  cardsInDecks: many(cardsInDecks),
+  creator: one(user, { fields: [deck.creator_id], references: [user.id] }),
+}));
+
+export const cardsInDecks = mysqlTable("cards_in_decks", {
+  deck_id: varchar("deck_id", { length: 191 }),
+  card_id: varchar("card_id", { length: 191 }),
+  number_copies: int("number_copies"),
+  addedAt: timestamp("addedAt").defaultNow(),
+
+  //   deck: foreignKey("deck", { table: "deck", column: "deck_id" }),
   //   card: foreignKey("card", { table: "card", column: "card_id" }),
 
-  //   primaryKeys: [["card_id", "format"]],
+  //   primaryKeys: [["deck_id", "card_id"]],
 });
+
+export type CardsInDecks = InferModel<typeof cardsInDecks>;
+
+export const cardsInDecksRelations = relations(cardsInDecks, ({ one }) => ({
+  card: one(card, { fields: [cardsInDecks.card_id], references: [card.id] }),
+  deck: one(deck, { fields: [cardsInDecks.deck_id], references: [deck.id] }),
+}));
+
+export const cardLegality = mysqlTable(
+  "card_legality",
+  {
+    card_id: varchar("card_id", { length: 191 }),
+    format: mysqlEnum("format", [
+      "standard",
+      "future",
+      "historic",
+      "gladiator",
+      "pioneer",
+      "explorer",
+      "modern",
+      "legacy",
+      "pauper",
+      "vintage",
+      "penny",
+      "commander",
+      "oathbreaker",
+      "brawl",
+      "historicbrawl",
+      "alchemy",
+      "paupercommander",
+      "duel",
+      "oldschool",
+      "premodern",
+      "predh",
+    ]),
+    legality: mysqlEnum("legality", [
+      "legal",
+      "not_legal",
+      "restricted",
+      "banned",
+    ]),
+  },
+  (table) => ({
+    unq: unique().on(table.card_id, table.format),
+  })
+);
+
 export type CardLegality = InferModel<typeof cardLegality>;
+
+export const cardLegalityRelations = relations(cardLegality, ({ one }) => ({
+  card: one(card, { fields: [cardLegality.card_id], references: [card.id] }),
+}));
 
 export const cardFace = mysqlTable("card_face", {
   id: serial("id").primaryKey(),
@@ -214,13 +287,16 @@ export const cardFace = mysqlTable("card_face", {
   name: varchar("name", { length: 191 }),
   mana_cost: varchar("mana_cost", { length: 191 }),
   type_line: varchar("type_line", { length: 191 }),
-  oracle_text: varchar("oracle_text", { length: 191 }),
+  oracle_text: text("oracle_text"),
   colors: varchar("colors", { length: 191 }),
   artist_id: varchar("artist_id", { length: 191 }),
   illustration_id: varchar("illustration_id", { length: 191 }),
   image_url: varchar("image_url", { length: 191 }),
-
   card_id: varchar("card_id", { length: 191 }),
-  //   card: foreignKey("card", { table: "card", column: "card_id" }),
 });
+
 export type CardFace = InferModel<typeof cardFace>;
+
+export const cardFaceRelations = relations(cardFace, ({ one }) => ({
+  card: one(card, { fields: [cardFace.card_id], references: [card.id] }),
+}));
