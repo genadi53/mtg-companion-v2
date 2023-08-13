@@ -96,7 +96,7 @@ export interface Card {
   printed_text?: string;
   printed_type_line?: string;
   promo: boolean;
-  promo_types: [];
+  promo_types?: [];
   purchase_uris: Record<string, string>;
   rarity: Rarity;
   related_uris: Record<string, string>;
