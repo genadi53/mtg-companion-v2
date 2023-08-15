@@ -2,13 +2,13 @@ import axios, { type AxiosResponse } from "axios";
 import { z } from "zod";
 import { createTRPCRouter, publicProcedure } from "~/server/api/trpc";
 import {
-  FetchCardsResponce,
+  type FetchCardsResponce,
   type Card,
   type FetchSymbolsResponce,
 } from "~/utils/fetchTypes";
 
 export const cardsRouter = createTRPCRouter({
-  fetchAllSymbols: publicProcedure.query(async ({ ctx }) => {
+  fetchAllSymbols: publicProcedure.query(async ({}) => {
     try {
       const result: AxiosResponse<FetchSymbolsResponce> = await axios(
         `https://api.scryfall.com/symbology`,
@@ -61,6 +61,29 @@ export const cardsRouter = createTRPCRouter({
         // } while (!isFinished);
         console.log(cards.length);
         return cards;
+      } catch (error) {
+        console.log(error);
+        return null;
+      }
+    }),
+
+  searchCard: publicProcedure
+    .input(z.object({ text: z.string().min(2) }))
+    .query(async ({ input }) => {
+      try {
+        const str = input.text.replace(" ", "+").toLowerCase();
+        const result: AxiosResponse<Card> = await axios(
+          `https://api.scryfall.com/cards/named?fuzzy=${str}`,
+          {
+            headers: {
+              "Content-Type": "application/json",
+            },
+          }
+        );
+
+        if (result === null || result.status !== 200) return null;
+        const card = result.data satisfies Card;
+        return card;
       } catch (error) {
         console.log(error);
         return null;
