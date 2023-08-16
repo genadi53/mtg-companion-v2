@@ -68,8 +68,9 @@ export const cardsRouter = createTRPCRouter({
     }),
 
   searchCard: publicProcedure
-    .input(z.object({ text: z.string().min(2) }))
+    .input(z.object({ text: z.string() }))
     .query(async ({ input }) => {
+      if (input.text.length <= 2) return null;
       try {
         const str = input.text.replace(" ", "+").toLowerCase();
         const result: AxiosResponse<Card> = await axios(

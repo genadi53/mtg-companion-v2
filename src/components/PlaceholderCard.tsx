@@ -4,6 +4,7 @@ import React from "react";
 import { Skeleton } from "./ui/skeleton";
 
 interface PlaceholderCardProps {
+  className?: string;
   width: number;
   height: number;
   onClick?: (e: React.MouseEvent) => void;
@@ -15,6 +16,7 @@ export const PlaceholderCard: React.FC<PlaceholderCardProps> = ({
   height,
   onClick,
   skeleton,
+  className,
 }) => {
   const imageUrl =
     "https://upload.wikimedia.org/wikipedia/en/a/aa/Magic_the_gathering-card_back.jpg";
@@ -25,6 +27,7 @@ export const PlaceholderCard: React.FC<PlaceholderCardProps> = ({
 
   return (
     <Image
+      className={className}
       src={imageUrl}
       alt="placeholder cardback"
       width={width}
