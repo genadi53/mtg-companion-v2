@@ -38,18 +38,18 @@ export const CardPreview: React.FC<CardPreviewProps> = ({
 
   if (isDoubleFaced) {
     display = (
-      <div>
-        <SwitchButton
-          size={35}
-          onClick={() => {
-            setActive(activeIdx === 0 ? 1 : 0);
-          }}
-        />
+      <div className="relative inline-block">
         <Image
           src={imageUrls[activeIdx]!}
           alt="card face"
           width={width}
           height={height}
+        />
+        <SwitchButton
+          size={35}
+          onClick={() => {
+            setActive(activeIdx === 0 ? 1 : 0);
+          }}
         />
       </div>
     );

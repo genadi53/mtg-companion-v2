@@ -16,13 +16,13 @@ export default function CardInfoPage() {
   const [searchedName, setSearchedName] = useState<string>("");
   const debouncedSearchValue = useDebounce(searchedName, 300);
 
-  const { data: cardData, isLoading } = api.card.searchCard.useQuery({
-    text: debouncedSearchValue,
-  });
-
-  // const { data: cardData, isLoading } = api.card.searchMultipleCards.useQuery({
+  // const { data: cardData, isLoading } = api.card.searchCard.useQuery({
   //   text: debouncedSearchValue,
   // });
+
+  const { data: cardData, isLoading } = api.card.searchMultipleCards.useQuery({
+    text: debouncedSearchValue,
+  });
 
   // if (isLoading) {
   // return <LoadingPage />;
@@ -38,13 +38,14 @@ export default function CardInfoPage() {
       />
       {!isLoading && cardData ? (
         <Suspense fallback={<Loading />}>
-          <div>
+          {/* <div>
             <CardPreview card={cardData} height={200} width={200} />
-          </div>
+          </div> */}
+          <CardsGrid cards={cardData} />
         </Suspense>
       ) : (
         <div>
-          <PlaceholderCard height={200} width={200} skeleton={true} />
+          {/* <PlaceholderCard height={200} width={200} skeleton={true} /> */}
         </div>
       )}
     </>

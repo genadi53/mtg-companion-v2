@@ -8,7 +8,7 @@ interface SwitchButtonProps {
   onClick: (e: React.MouseEvent) => void;
 }
 
-const SwitchButton: React.FC<SwitchButtonProps> = ({ size, onClick }) => {
+const SwitchButton: React.FC<SwitchButtonProps> = ({ onClick }) => {
   const { theme } = useTheme();
 
   const [color, setColor] = useState<string>(
@@ -28,7 +28,7 @@ const SwitchButton: React.FC<SwitchButtonProps> = ({ size, onClick }) => {
       title="Turn Over"
       className={cn(
         "h-11 w-11 cursor-pointer rounded-[100%] border-2 border-[#343242] bg-white p-2 text-black opacity-60",
-        "relative left-[72.5%] top-[37.25%] z-10"
+        "absolute left-[72.5%] top-[37.25%] z-10"
       )}
       // class="card-grid-item-transform-button"
       onClick={(e) => {
