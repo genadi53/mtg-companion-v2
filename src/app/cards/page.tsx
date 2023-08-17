@@ -11,6 +11,7 @@ import { PlaceholderCard } from "~/components/PlaceholderCard";
 import { Search } from "~/components/SearchBar";
 import { useDebounce } from "~/hooks/useDebounce";
 import { CardsGrid } from "~/components/CardGrid";
+import { CardTable } from "~/components/CardTable";
 
 export default function CardInfoPage() {
   const [searchedName, setSearchedName] = useState<string>("");
@@ -41,7 +42,8 @@ export default function CardInfoPage() {
           {/* <div>
             <CardPreview card={cardData} height={200} width={200} />
           </div> */}
-          <CardsGrid cards={cardData} />
+          {/* <CardsGrid cards={cardData} /> */}
+          <CardTable cards={cardData} />
         </Suspense>
       ) : (
         <div>
