@@ -32,8 +32,10 @@ export const cardsRouter = createTRPCRouter({
   }),
 
   searchMultipleCards: publicProcedure
-    .input(z.object({ text: z.string().min(2) }))
+    .input(z.object({ text: z.string() }))
     .query(async ({ input }) => {
+      if (input.text.length <= 2) return [];
+
       try {
         const cards: Card[] = [];
         // let isFinished = false;
@@ -59,11 +61,10 @@ export const cardsRouter = createTRPCRouter({
         // isFinished = true;
         // }
         // } while (!isFinished);
-        console.log(cards.length);
         return cards;
       } catch (error) {
         console.log(error);
-        return null;
+        return [];
       }
     }),
 

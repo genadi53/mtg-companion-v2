@@ -44,6 +44,7 @@ export const CardPreview: React.FC<CardPreviewProps> = ({
           alt="card face"
           width={width}
           height={height}
+          className="h-full w-full"
         />
         <SwitchButton
           size={35}
@@ -55,9 +56,19 @@ export const CardPreview: React.FC<CardPreviewProps> = ({
     );
   } else {
     display = imageUrl ? (
-      <Image src={imageUrl} alt="card face" width={width} height={height} />
+      <Image
+        src={imageUrl}
+        alt="card face"
+        width={width}
+        height={height}
+        className="h-full w-full"
+      />
     ) : (
-      <PlaceholderCard width={width} height={height} />
+      <PlaceholderCard
+        width={width}
+        height={height}
+        className="h-full w-full"
+      />
     );
   }
 

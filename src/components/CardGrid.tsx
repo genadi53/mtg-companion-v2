@@ -9,13 +9,15 @@ interface GridProps {
 
 export const CardsGrid: React.FC<GridProps> = ({ cards }) => {
   return (
-    <div className="my-4 grid gap-2 px-2">
-      <div className="flex flex-row flex-wrap items-center justify-between">
-        {cards.map((card) => (
-          <div key={card.id} className="my-2">
-            <CardPreview card={card} height={200} width={200} />
-          </div>
-        ))}
+    <div className="container my-4 px-4">
+      <div className="mx-auto w-4/5">
+        <div className="grid grid-cols-2 justify-items-center gap-2 sm:grid-cols-3 xl:grid-cols-4">
+          {cards.map((card) => (
+            <div key={card.id} className="my-2">
+              <CardPreview card={card} height={200} width={200} />
+            </div>
+          ))}
+        </div>
       </div>
     </div>
   );
