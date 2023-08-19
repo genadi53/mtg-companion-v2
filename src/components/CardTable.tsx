@@ -1,5 +1,5 @@
 "use client";
-import React from "react";
+import React, { useState } from "react";
 import {
   Table,
   TableBody,
@@ -11,6 +11,11 @@ import {
 } from "~/components/ui/table";
 import { type Card } from "~/utils/fetchTypes";
 import { CardPreview } from "./CardPreview";
+import {
+  HoverCard,
+  HoverCardContent,
+  HoverCardTrigger,
+} from "~/components/ui/hover-card";
 
 interface TableProps {
   cards: Card[];
@@ -22,7 +27,9 @@ export const CardTable: React.FC<TableProps> = ({ cards }) => {
       <div className="mx-auto w-4/5">
         <Table>
           <TableCaption>
-            1 - 175 of 192 cards where the name includes “tha”
+            {/* 1 - 175 of 192 cards where the name includes “tha” */}
+            {cards &&
+              `Found ${cards.length} cards where the name includes \'str\'`}
           </TableCaption>
           <TableHeader>
             <TableRow>
@@ -39,31 +46,52 @@ export const CardTable: React.FC<TableProps> = ({ cards }) => {
               <TableHead className="text-left">EUR</TableHead>
             </TableRow>
           </TableHeader>
+
           <TableBody>
             {cards.map((card) => {
               return (
-                <TableRow key={card.id}>
-                  <TableCell className="text-left">{card.set}</TableCell>
-                  <TableCell className="text-left">
-                    {card.collector_number}
-                  </TableCell>
-                  <TableCell className="text-left">{card.name}</TableCell>
-                  <TableCell className="text-left">{card.mana_cost}</TableCell>
-                  <TableCell className="text-left">
-                    {card.type_line.split("—")[0]}
-                  </TableCell>
-                  <TableCell className="text-left">{card.rarity}</TableCell>
-                  <TableCell className="text-left uppercase">
-                    {card.lang}
-                  </TableCell>
-                  <TableCell className="text-left">{card.artist}</TableCell>
-                  <TableCell className="text-right">
-                    {card.prices ? `$${card.prices.usd}` : ""}
-                  </TableCell>
-                  <TableCell className="text-right">
-                    {card.prices ? `€${card.prices.eur}` : ""}
-                  </TableCell>
-                </TableRow>
+                <HoverCard
+                  key={card.id}
+                  openDelay={300}
+                  // closeDelay={300}
+                  // open={dialogOpen}
+                  // onOpenChange={setDialogOpen}
+                >
+                  <HoverCardTrigger asChild>
+                    <TableRow>
+                      <TableCell className="text-left">{card.set}</TableCell>
+                      <TableCell className="text-left">
+                        {card.collector_number}
+                      </TableCell>
+                      <TableCell className="text-left">{card.name}</TableCell>
+                      <TableCell className="text-left">
+                        {card.mana_cost
+                          ? card.mana_cost
+                          : card.card_faces
+                          ? card.card_faces[0]?.mana_cost
+                          : ""}
+                      </TableCell>
+                      <TableCell className="text-left">
+                        {card.type_line.split("—")[0]}
+                      </TableCell>
+                      <TableCell className="text-left">{card.rarity}</TableCell>
+                      <TableCell className="text-left uppercase">
+                        {card.lang}
+                      </TableCell>
+                      <TableCell className="text-left">{card.artist}</TableCell>
+                      <TableCell className="text-right">
+                        {card.prices?.usd ? `$${card.prices.usd}` : ""}
+                      </TableCell>
+                      <TableCell className="text-right">
+                        {card.prices.eur ? `€${card.prices.eur}` : ""}
+                      </TableCell>
+                    </TableRow>
+                  </HoverCardTrigger>
+
+                  <HoverCardContent>
+                    <CardPreview card={card} height={200} width={200} />
+                  </HoverCardContent>
+                </HoverCard>
               );
             })}
           </TableBody>
