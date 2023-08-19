@@ -12,9 +12,19 @@ import { Search } from "~/components/SearchBar";
 import { useDebounce } from "~/hooks/useDebounce";
 import { CardsGrid } from "~/components/CardGrid";
 import { CardTable } from "~/components/CardTable";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "~/components/ui/select";
+
+type CardDisplayTypes = "text" | "image" | "list";
 
 export default function CardInfoPage() {
   const [searchedName, setSearchedName] = useState<string>("");
+  const [cardDisplay, setCardDisplay] = useState<CardDisplayTypes>("list");
   const debouncedSearchValue = useDebounce(searchedName, 300);
 
   // const { data: cardData, isLoading } = api.card.searchCard.useQuery({
@@ -31,19 +41,34 @@ export default function CardInfoPage() {
 
   return (
     <>
-      <Search
-        onChange={(e) => {
-          console.log(e.target.value);
-          setSearchedName(e.target.value);
-        }}
-      />
+      <div>
+        <Search
+          onChange={(e) => {
+            console.log(e.target.value);
+            setSearchedName(e.target.value);
+          }}
+        />
+        <Select
+          defaultValue="list"
+          onValueChange={(value) => {
+            setCardDisplay(value as CardDisplayTypes);
+          }}
+        >
+          <SelectTrigger className="mx-4 w-[180px]">
+            <SelectValue placeholder="Display as" />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value="image">Images</SelectItem>
+            <SelectItem value="list">Checklist</SelectItem>
+            <SelectItem value="text">Text Only</SelectItem>
+          </SelectContent>
+        </Select>
+      </div>
+
       {!isLoading && cardData ? (
         <Suspense fallback={<Loading />}>
-          {/* <div>
-            <CardPreview card={cardData} height={200} width={200} />
-          </div> */}
-          {/* <CardsGrid cards={cardData} /> */}
-          <CardTable cards={cardData} />
+          {cardDisplay === "image" && <CardsGrid cards={cardData} />}
+          {cardDisplay === "list" && <CardTable cards={cardData} />}
         </Suspense>
       ) : (
         <div>
