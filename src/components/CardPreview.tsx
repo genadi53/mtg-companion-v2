@@ -4,6 +4,7 @@ import React, { useState } from "react";
 import SwitchButton from "~/components/SwitchButton";
 import { type Card } from "~/utils/fetchTypes";
 import { PlaceholderCard } from "./PlaceholderCard";
+import { useRouter } from "next/navigation";
 
 // type CardSize = {}
 
@@ -18,6 +19,7 @@ export const CardPreview: React.FC<CardPreviewProps> = ({
   width,
   height,
 }) => {
+  const router = useRouter();
   let display = null;
   const isDoubleFaced = card.card_faces?.[0]?.image_uris ? true : false;
   const imageUrl: string | null = card.image_uris
@@ -45,6 +47,9 @@ export const CardPreview: React.FC<CardPreviewProps> = ({
           width={width}
           height={height}
           className="h-full w-full"
+          onClick={() => {
+            router.push(`/cards/${card.id}`);
+          }}
         />
         <SwitchButton
           size={35}
@@ -62,12 +67,18 @@ export const CardPreview: React.FC<CardPreviewProps> = ({
         width={width}
         height={height}
         className="h-full w-full"
+        onClick={() => {
+          router.push(`/cards/${card.id}`);
+        }}
       />
     ) : (
       <PlaceholderCard
         width={width}
         height={height}
         className="h-full w-full"
+        onClick={() => {
+          router.push(`/cards/${card.id}`);
+        }}
       />
     );
   }
