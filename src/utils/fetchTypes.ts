@@ -66,6 +66,7 @@ export interface Card {
   loyalty?: string;
   mana_cost?: string;
   oracle_text?: string;
+  flavor_text?: string;
   oversized: boolean;
   power?: string;
   produced_mana?: string[];

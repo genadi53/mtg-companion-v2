@@ -6,6 +6,22 @@ interface LegalFormatsProps {
   legalities: Record<string, Legalities>;
 }
 
+const importantFormats = [
+  "standard",
+  "alchemy",
+  "pioneer",
+  "explorer",
+  "modern",
+  "brawl",
+  "legacy",
+  "historic",
+  "vintage",
+  "pauper",
+  "commander",
+  "penny",
+  "oathbreaker",
+];
+
 const matchColor = (legality: string) => {
   const colors = {
     notLegal: "#AEAEAE",
@@ -25,25 +41,30 @@ export const CardLegalFormats: React.FC<LegalFormatsProps> = ({
 }) => {
   console.log(legalities);
   return (
-    <div className="grid grid-cols-2 gap-2">
+    //  border-2 p-4
+    <div className="grid grid-cols-2 gap-4">
       {Object.entries(legalities).map(([format, legal], idx) => {
         // console.log(format, legal);
-        return (
-          <div key={idx} className="grid grid-cols-2 gap-2">
-            <div
-              style={{
-                backgroundColor: matchColor(legal),
-              }}
-            >
-              <p className="text-center">
-                {legal.replace("_", " ").toUpperCase()}
-              </p>
+        const isImportant = importantFormats.includes(format);
+        if (isImportant) {
+          return (
+            <div key={idx} className="grid grid-cols-2 justify-items-center">
+              <div
+                className="w-min-20 w-20 rounded-sm p-1"
+                style={{
+                  backgroundColor: matchColor(legal),
+                }}
+              >
+                <p className="text-center text-xs	font-semibold text-white">
+                  {legal.replace("_", " ").toUpperCase()}
+                </p>
+              </div>
+              <div className="justify-self-start text-left text-lg">
+                {format}
+              </div>
             </div>
-            <div style={{ marginLeft: 10 }}>
-              <p>{format}</p>
-            </div>
-          </div>
-        );
+          );
+        }
       })}
     </div>
   );

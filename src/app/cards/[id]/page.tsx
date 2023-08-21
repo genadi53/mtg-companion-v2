@@ -4,6 +4,7 @@ import {
   useSearchParams,
   notFound,
 } from "next/navigation";
+import { CardInfo } from "~/components/CardInfo";
 import { CardPreview } from "~/components/CardPreview";
 import { CardLegalFormats } from "~/components/Legalities";
 import { type Card } from "~/utils/fetchTypes";
@@ -17,7 +18,7 @@ interface CardPageProps {
 //   return [{ id: "1" }, { id: "2" }];
 // }
 
-export default async function CardInfo({ params }: CardPageProps) {
+export default async function CardInfoPage({ params }: CardPageProps) {
   //   const router = useRouter();
   //   const pathname = usePathname();
   //   const searchParams = useSearchParams();
@@ -40,7 +41,7 @@ export default async function CardInfo({ params }: CardPageProps) {
           <CardPreview card={card} width={200} height={200} />
         </div>
         <div>
-          <CardPreview card={card} width={200} height={200} />
+          <CardInfo card={card} />
         </div>
         <div>
           <CardLegalFormats legalities={card.legalities} />
