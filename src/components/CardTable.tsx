@@ -16,12 +16,14 @@ import {
   HoverCardContent,
   HoverCardTrigger,
 } from "~/components/ui/hover-card";
+import { useRouter } from "next/navigation";
 
 interface TableProps {
   cards: Card[];
 }
 
 export const CardTable: React.FC<TableProps> = ({ cards }) => {
+  const router = useRouter();
   return (
     <div className="container my-4 px-4">
       <div className="mx-auto w-4/5">
@@ -58,7 +60,11 @@ export const CardTable: React.FC<TableProps> = ({ cards }) => {
                   // onOpenChange={setDialogOpen}
                 >
                   <HoverCardTrigger asChild>
-                    <TableRow>
+                    <TableRow
+                      onClick={() => {
+                        router.push(`/cards/${card.id}`);
+                      }}
+                    >
                       <TableCell className="text-left">{card.set}</TableCell>
                       <TableCell className="text-left">
                         {card.collector_number}

@@ -69,10 +69,10 @@ export interface Card {
   flavor_text?: string;
   oversized: boolean;
   power?: string;
+  toughness?: string;
   produced_mana?: string[];
   reserved: boolean;
   type_line: string;
-  toughness?: string;
 
   artist: string;
   attraction_lights?: [];
@@ -141,6 +141,9 @@ export interface CardFacesDetails {
   mana_cost: string;
   type_line: string;
   oracle_text: string;
+  flavor_text?: string;
+  power?: string;
+  toughness?: string;
   colors: string[];
   artist_id: string;
   illustration_id: string;
