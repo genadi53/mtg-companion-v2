@@ -12,7 +12,8 @@ const SwitchButton: React.FC<SwitchButtonProps> = ({ onClick }) => {
   const { theme } = useTheme();
 
   const [color, setColor] = useState<string>(
-    theme === "light" ? "#000" : "#fff"
+    // theme === "light" ? "#000" : "#fff"
+    "#000"
   );
 
   return (

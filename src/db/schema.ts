@@ -300,3 +300,21 @@ export type CardFace = InferModel<typeof cardFace>;
 export const cardFaceRelations = relations(cardFace, ({ one }) => ({
   card: one(card, { fields: [cardFace.card_id], references: [card.id] }),
 }));
+
+export const symbol = mysqlTable("symbol", {
+  id: serial("id").primaryKey(),
+  symbol: varchar("symbol", { length: 191 }).unique(),
+  svg_uri: varchar("svg_uri", { length: 191 }),
+  loose_variant: varchar("loose_variant", { length: 191 }),
+  english: varchar("english", { length: 191 }),
+  transposable: boolean("transposable").default(false),
+  represents_mana: boolean("represents_mana").default(false),
+  appears_in_mana_costs: boolean("appears_in_mana_costs").default(false),
+  mana_value: int("mana_value"),
+  cmc: int("cmc"),
+  funny: boolean("funny").default(false),
+  colors: varchar("colors", { length: 191 }),
+  gatherer_alternates: varchar("gatherer_alternates", { length: 191 }),
+});
+
+export type Symbol = InferModel<typeof symbol>;

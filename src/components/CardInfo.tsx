@@ -4,10 +4,15 @@ import { Card } from "~/components/ui/card";
 import type { Card as CardType } from "~/utils/fetchTypes";
 import { CardLegalFormats } from "./Legalities";
 import { cn } from "~/utils/cn";
+import { ManaSymbol } from "./ManaSymbol";
 
 interface CardInfoProps {
   card: CardType;
 }
+
+const checkTextForSymbols = (text: string) => {
+  return "";
+};
 
 export const CardInfo: React.FC<CardInfoProps> = ({ card }) => {
   const divStyles = "w-full border-b border-b-slate-400 p-2 text-left my-1";
@@ -19,8 +24,16 @@ export const CardInfo: React.FC<CardInfoProps> = ({ card }) => {
       <>
         {card.card_faces.map((face) => (
           <>
-            <div className={cn(divStyles, "text-base font-medium")}>
-              {face.name} {face.mana_cost}
+            <div
+              className={cn(
+                divStyles,
+                "flex flex-row items-center text-base font-medium"
+              )}
+            >
+              <div className="mr-2">{face.name}</div>
+              <div>
+                <ManaSymbol manaStr={face.mana_cost} size={18} />
+              </div>
             </div>
             <div className={cn(divStyles, "text-base font-medium")}>
               {face.type_line}

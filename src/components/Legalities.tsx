@@ -39,7 +39,6 @@ const matchColor = (legality: string) => {
 export const CardLegalFormats: React.FC<LegalFormatsProps> = ({
   legalities,
 }) => {
-  console.log(legalities);
   return (
     //  border-2 p-4
     <div className="grid grid-cols-2 gap-4">
