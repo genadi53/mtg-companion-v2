@@ -8,7 +8,10 @@ import { api } from "~/utils/api";
 export default function Home() {
   const hello = api.example.hello.useQuery({ text: "from tRPC" });
   // const sets = api.set.fetchAllSets.useQuery();
-  const searchCards = api.card.searchMultipleCards.useQuery({ text: "th" });
+  const fetchSymbols = api.card.getCardSymbols.useQuery({
+    text: "{T}{1}{1}{CHAOS}",
+  });
+  // const searchCards = api.card.searchMultipleCards.useQuery({ text: "th" });
 
   return (
     <>
