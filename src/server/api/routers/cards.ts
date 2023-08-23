@@ -158,8 +158,16 @@ export const cardsRouter = createTRPCRouter({
         return result;
       };
 
+      const symbolsUrlMap = new Map<string, string>();
       const allUrls: string[] = symbolsArray.map((s) => {
-        return findSymbolImgUri(s);
+        const url = symbolsUrlMap.get(s);
+        if (url) {
+          return url;
+        } else {
+          const url = findSymbolImgUri(s);
+          symbolsUrlMap.set(s, url);
+          return url;
+        }
       });
       return allUrls;
     }),
