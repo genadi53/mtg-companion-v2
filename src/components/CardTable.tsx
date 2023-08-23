@@ -17,6 +17,7 @@ import {
   HoverCardTrigger,
 } from "~/components/ui/hover-card";
 import { useRouter } from "next/navigation";
+import { ManaSymbol } from "./ManaSymbol";
 
 interface TableProps {
   cards: Card[];
@@ -51,6 +52,12 @@ export const CardTable: React.FC<TableProps> = ({ cards }) => {
 
           <TableBody>
             {cards.map((card) => {
+              const manaStr = card.mana_cost
+                ? card.mana_cost
+                : card.card_faces?.[0]
+                ? card.card_faces[0].mana_cost
+                : "";
+
               return (
                 <HoverCard
                   key={card.id}
@@ -71,11 +78,12 @@ export const CardTable: React.FC<TableProps> = ({ cards }) => {
                       </TableCell>
                       <TableCell className="text-left">{card.name}</TableCell>
                       <TableCell className="text-left">
-                        {card.mana_cost
+                        {/* {card.mana_cost
                           ? card.mana_cost
                           : card.card_faces
                           ? card.card_faces[0]?.mana_cost
-                          : ""}
+                          : ""} */}
+                        <ManaSymbol manaStr={manaStr} size={16} />
                       </TableCell>
                       <TableCell className="text-left">
                         {card.type_line.split("—")[0]}

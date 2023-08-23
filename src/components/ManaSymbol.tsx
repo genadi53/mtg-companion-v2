@@ -9,30 +9,17 @@ interface ManaSymbolPops {
 }
 
 export const ManaSymbol: React.FC<ManaSymbolPops> = ({ manaStr, size }) => {
-  const symbolsArray = manaStr.match(/{\w+}/g) ?? [];
-  const { data: symbols } = api.card.fetchAllSymbols.useQuery();
-
-  const findSymbolImgUri = (symbolStr: string) => {
-    let result =
-      "https://c2.scryfall.com/file/scryfall-symbols/card-symbols/PW.svg";
-    if (symbols) {
-      symbols.forEach((symbol) => {
-        if (symbol.symbol === symbolStr) {
-          result = symbol.svg_uri;
-        }
-      });
-    }
-    return result;
-  };
-
+  const { data: symbolsUrls } = api.card.getCardSymbols.useQuery({
+    text: manaStr,
+  });
   return (
     <div className="flex">
-      {symbolsArray.map((symbol, idx) => {
+      {symbolsUrls?.map((url, idx) => {
         return (
           <Image
-            key={`${symbol}${idx}`}
+            key={`${idx}`}
             src={{
-              src: findSymbolImgUri(symbol),
+              src: url,
               width: size ? size : 25,
               height: size ? size : 25,
             }}
