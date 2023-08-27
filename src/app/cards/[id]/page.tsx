@@ -6,6 +6,7 @@ import {
 } from "next/navigation";
 import { CardInfo } from "~/components/CardInfo";
 import { CardPreview } from "~/components/CardPreview";
+import CardSets from "~/components/CardSets";
 import { CardLegalFormats } from "~/components/Legalities";
 import { type Card } from "~/utils/fetchTypes";
 
@@ -44,7 +45,7 @@ export default async function CardInfoPage({ params }: CardPageProps) {
           <CardInfo card={card} />
         </div>
         <div>
-          <CardLegalFormats legalities={card.legalities} />
+          <CardSets card={card} />
         </div>
       </div>
     </div>

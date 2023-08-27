@@ -19,7 +19,7 @@ const config = {
     defaultLocale: "en",
   },
   images: {
-    domains: ["cards.scryfall.io", "upload.wikimedia.org"],
+    domains: ["cards.scryfall.io", "upload.wikimedia.org", "svgs.scryfall.io"],
     remotePatterns: [
       {
         protocol: "https",
