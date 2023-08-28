@@ -183,6 +183,13 @@ export interface CardPreview {
   previewed_at: string;
 }
 
+export interface CardRuling {
+  oracle_id: string;
+  source: string;
+  published_at: string;
+  comment: string;
+}
+
 export interface GenericFetchResponce {
   object: string;
   has_more?: boolean;
@@ -201,4 +208,8 @@ export interface FetchSymbolsResponce extends GenericFetchResponce {
 
 export interface FetchCardsResponce extends GenericFetchResponce {
   data: Card[];
+}
+
+export interface FetchCardRulingsResponce extends GenericFetchResponce {
+  data: CardRuling[];
 }

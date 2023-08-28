@@ -6,8 +6,8 @@ import {
 } from "next/navigation";
 import { CardInfo } from "~/components/CardInfo";
 import { CardPreview } from "~/components/CardPreview";
+import CardRulings from "~/components/CardRulings";
 import CardSets from "~/components/CardSets";
-import { CardLegalFormats } from "~/components/Legalities";
 import { type Card } from "~/utils/fetchTypes";
 
 interface CardPageProps {
@@ -25,35 +25,44 @@ export default async function CardInfoPage({ params }: CardPageProps) {
   //   const searchParams = useSearchParams();
   const cardId = params.id;
   const card = await getCard(cardId);
-
-  console.log(card);
+  // console.log(card);
 
   if (!card) {
-    notFound();
+    return notFound();
   }
 
   return (
-    <div className="container">
-      {card.name}
-      <div>{cardId}</div>
-
-      <div className="grid grid-cols-1 gap-2 xl:grid-cols-3 ">
-        <div>
-          <CardPreview card={card} width={200} height={200} />
+    <>
+      {card && (
+        <div className="container">
+          <div className="grid grid-cols-1 gap-2 xl:grid-cols-3 ">
+            <div>
+              <CardPreview card={card} width={200} height={200} />
+            </div>
+            <div>
+              <CardInfo card={card} />
+            </div>
+            <div>
+              <CardSets card={card} />
+            </div>
+          </div>
+          <CardRulings cardId={card.id} cardName={card.name} />
         </div>
-        <div>
-          <CardInfo card={card} />
-        </div>
-        <div>
-          <CardSets card={card} />
-        </div>
-      </div>
-    </div>
+      )}
+    </>
   );
 }
 
+type CardResponce = Card | null;
 async function getCard(id: string) {
-  const res = await fetch(`https://api.scryfall.com/cards/${id}`);
-  const card = (await res.json()) as Card;
-  return card;
+  try {
+    const res = await fetch(`https://api.scryfall.com/cards/${id}`);
+    if (res.status !== 200) throw new Error("Something went wrong with fetch.");
+    const card = (await res.json()) as CardResponce;
+    // console.log(card);
+    return card;
+  } catch (error) {
+    console.error(error);
+    return null;
+  }
 }

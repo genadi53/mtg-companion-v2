@@ -3,7 +3,7 @@ import React from "react";
 import type { Legalities } from "~/utils/fetchTypes";
 
 interface LegalFormatsProps {
-  legalities: Record<string, Legalities>;
+  legalities: Record<string, Legalities> | null;
 }
 
 const importantFormats = [
@@ -39,6 +39,8 @@ const matchColor = (legality: string) => {
 export const CardLegalFormats: React.FC<LegalFormatsProps> = ({
   legalities,
 }) => {
+  if (!legalities) return null;
+
   return (
     //  border-2 p-4
     <div className="grid grid-cols-2 gap-4">
