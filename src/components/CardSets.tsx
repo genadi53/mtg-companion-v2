@@ -1,7 +1,7 @@
 /* eslint-disable @next/next/no-img-element */
 import Image from "next/image";
 import React from "react";
-import type { Card, FetchCardsResponce, Rarity } from "~/utils/fetchTypes";
+import type { Card, FetchCardsResponce, Rarity, Set } from "~/utils/fetchTypes";
 import {
   Table,
   TableBody,
@@ -30,9 +30,6 @@ const getRarityColor = (rarity: Rarity) => {
 };
 
 export default async function CardSets({ card }: CardSetsProps) {
-  const defaultSetUrl =
-    "https://c2.scryfall.com/file/scryfall-symbols/sets/default.svg?1655697600";
-
   const fetchAllPrints = async () => {
     try {
       if (!card.prints_search_uri) return [];
@@ -63,7 +60,40 @@ export default async function CardSets({ card }: CardSetsProps) {
     }
   };
 
+  const fetchSetUrl = async () => {
+    const defaultSetUrl =
+      "https://c2.scryfall.com/file/scryfall-symbols/sets/default.svg?1655697600";
+    try {
+      if (!card.set_uri || !card.set_id) return defaultSetUrl;
+
+      const fetch_url = card.set_uri
+        ? card.set_uri
+        : card.set_id
+        ? `https://api.scryfall.com/sets/${card.set_id}`
+        : "";
+
+      if (!fetch_url) throw new Error("Cannot find the fetch url");
+
+      const result = await fetch(fetch_url, {
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+
+      if (result.status === 200) {
+        const set = (await result.json()) as Set;
+        return set.icon_svg_uri;
+      }
+      return defaultSetUrl;
+    } catch (error) {
+      console.log(error);
+      return defaultSetUrl;
+    }
+  };
+
   const prints = await fetchAllPrints();
+  const setImageUrl = await fetchSetUrl();
+
   return (
     <>
       <div className="mb-2 mt-4 w-full bg-[#343242]">
@@ -76,7 +106,7 @@ export default async function CardSets({ card }: CardSetsProps) {
             //   }}
             alt="card-set"
             className="ml-2 h-8 w-8 rounded-2xl bg-[#FDFDFD]"
-            src={defaultSetUrl}
+            src={setImageUrl}
             style={{ objectFit: "fill" }}
             //   width={16}
             //   height={16}

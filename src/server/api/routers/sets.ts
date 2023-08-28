@@ -5,8 +5,8 @@ import axios from "axios";
 import { type Set } from "@prisma/client";
 
 export const setRouter = createTRPCRouter({
-  getAll: publicProcedure.query(async ({ ctx }) => {
-    return ctx.prisma.example.findMany();
+  getAll: publicProcedure.query(({ ctx }) => {
+    return ctx.prisma.set.findMany();
   }),
   fetchAllSets: publicProcedure.query(async ({ ctx }) => {
     const result: AxiosResponse<FetchSetsResponce> = await axios.request({
